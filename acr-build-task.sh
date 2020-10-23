@@ -1,5 +1,8 @@
 #!/bin/sh
 
+
+#script create commit task
+
 #set env variables
 ACR_NAME=hybridaccessdev01
 TASK_NAME=vsts-agent-task
