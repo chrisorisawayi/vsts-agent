@@ -14,7 +14,6 @@ az acr task create \
     --registry $ACR_NAME \
     --name $TASK_NAME \
     --image $IMAGE_NAME:{{.Run.ID}} \
-    --arg REGISTRY_NAME=$ACR_NAME.azurecr.io \
     --context https://github.com/$GIT_USER/${IMAGE_NAME}.git \
-    --file Dockerfile-app \
+    --file Dockerfile \
     --git-access-token $GIT_PAT
