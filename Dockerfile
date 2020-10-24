@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04
 # configure apt to not require confirmation (assume the -y argument by default)
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
+RUN sudo sh -c '(echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes)'
 
 RUN apt-get update \
 && apt-get install -y --no-install-recommends \
