@@ -18,11 +18,54 @@ RUN apt-get update \
         libcurl4 \
         libicu60 \
         libunwind8 \
+        lsb-release \
+        make \
         netcat \
         libssl1.0 \
+        apt-transport-https \
+        software-properties-common \
+        apt-utils \
         wget \
         unzip \
-        gnupg2
+        zip \
+         gnupg
+
+ENV AZ_VERSION 2.13.0-1~bionic
+
+# Install Azure CLI
+RUN rm -rf /var/lib/apt/lists/* \
+  && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" \
+  | tee /etc/apt/sources.list.d/azure-cli.list \
+  && wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb\
+  && dpkg -i packages-microsoft-prod.deb \
+  && apt-get update \
+  && add-apt-repository universe \
+  && apt-get install powershell \
+  && curl -sL https://packages.microsoft.com/keys/microsoft.asc | apt-key add - > /dev/null \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+       azure-cli=$AZ_VERSION \
+  && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+  && apt-get install -y nodejs \
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /etc/apt/sources.list.d/*
+
+# Install Java OpenJDKs
+RUN apt-add-repository -y ppa:openjdk-r/ppa \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends openjdk-8-jdk \
+  && rm -rf /var/lib/apt/lists/* \
+  && update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+
+ENV JAVA_HOME_8_X64=/usr/lib/jvm/java-8-openjdk-amd64 \
+    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
+    JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+
+# Install Docker
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - > /dev/null \
+  && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+  && apt-get update \
+  && apt-get install -y docker-ce
 
 # Install SQLPackage
 RUN mkdir /opt/sqlpackage \
@@ -33,7 +76,7 @@ RUN mkdir /opt/sqlpackage \
 
 
 # Install MSSQL Tools
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - > /dev/null \
     && curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list | tee /etc/apt/sources.list.d/msprod.list \
     && apt-get update \
     && ACCEPT_EULA=Y apt-get install mssql-tools unixodbc-dev \
