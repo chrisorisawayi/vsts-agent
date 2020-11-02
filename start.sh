@@ -1,7 +1,11 @@
 #!/bin/bash
 set -e
 
-export AZP_TOKEN=$(cat /mnt/azpToken/azpToken)
+# Create AZP_TOKEN env variable if mounted token file exist - to support token mounted from key vault using CSI driver
+if [ -f "/mnt/azpToken/azpToken"]; then
+  export AZP_TOKEN=$(cat /mnt/azpToken/azpToken)
+  exit 1
+fi
 
 if [ -z "$AZP_URL" ]; then
   echo 1>&2 "error: missing AZP_URL environment variable"
