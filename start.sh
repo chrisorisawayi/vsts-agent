@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-export AZP_TOKEN=$(cat /mnt/azpToken)
+export AZP_TOKEN=$(cat /mnt/azpToken/azpToken)
 
 if [ -z "$AZP_URL" ]; then
   echo 1>&2 "error: missing AZP_URL environment variable"
