@@ -2,7 +2,7 @@
 set -e
 
 # Create AZP_TOKEN env variable if mounted token file exist - to support token mounted from key vault using CSI driver
-if [ -f "/mnt/azpToken/azpToken"]; then
+if [ -f "/mnt/azpToken/azpToken" ]; then
   export AZP_TOKEN=$(cat /mnt/azpToken/azpToken)
   exit 1
 fi
